@@ -4,6 +4,7 @@ import com.buri.srstart.data.Position;
 import com.buri.srstart.exceptions.AlreadyRunningException;
 import com.buri.srstart.intf.SRCoreIntf;
 import com.buri.srstart.intf.SRDefaults;
+import com.buri.srstart.intf.SRSessionIntf;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
@@ -17,18 +18,22 @@ import java.util.logging.Logger;
 public class SRStart extends javax.swing.JFrame {
 
     private SRCoreIntf core = null;
+    private SRSessionIntf session = null;
     private SRPositioning positioning = null;
     private final Runnable timeUpdater;
+    private boolean alive;
     
     
     /**
      * Creates new form SRStart
      */
     public SRStart() {
+        alive = true;
         initComponents();
         initSR();
         timeUpdater = () -> {
-            while (true) {
+            
+            while (alive) {
                 if(positioning != null && jLabCurrentTimeData != null) {
                     LocalDateTime currentTime = positioning.getCurrentGPSTime();
                     Position p = positioning.getCurrentPosition();
@@ -41,6 +46,13 @@ public class SRStart extends javax.swing.JFrame {
                         jLabLatitudeData.paintImmediately(jLabLatitudeData.getVisibleRect());
                         jLabLongitudeData.setText(p.getFormattedLongitude());
                         jLabLongitudeData.paintImmediately(jLabLongitudeData.getVisibleRect());
+                    }
+                    
+                    if (session != null) {
+                        int metersToStartLine = session.getMetersToStartLine();
+                        LocalDateTime startTime = session.getStartTime();
+                        int suggestionForSpeed = session.getSuggetionForSpeed();
+                        int speed = session.getSpeedInKnots();
                     }
                 }
                 try {
@@ -76,8 +88,28 @@ public class SRStart extends javax.swing.JFrame {
         jLabEmpty = new javax.swing.JLabel();
         jLabLatitudeData = new javax.swing.JLabel();
         jLabLongitudeData = new javax.swing.JLabel();
+        butNewRace = new javax.swing.JButton();
+        butSettings = new javax.swing.JButton();
+        racePanel = new javax.swing.JPanel();
+        butSync = new javax.swing.JButton();
+        butOneSec = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        labTimeForStart = new javax.swing.JLabel();
+        labDistance = new javax.swing.JLabel();
+        labRaceTime = new javax.swing.JLabel();
+        labSpeed = new javax.swing.JLabel();
+        jProgressDecelerate = new javax.swing.JProgressBar();
+        jProgressAccelerate = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sail Race Start");
+        setName("Sail Race Start"); // NOI18N
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabCurrentTimeText.setText("Current Time:");
 
@@ -162,11 +194,107 @@ public class SRStart extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21))
+        );
+
+        butNewRace.setText("New Race");
+        butNewRace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butNewRaceActionPerformed(evt);
+            }
+        });
+
+        butSettings.setText("Settings");
+        butSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butSettingsActionPerformed(evt);
+            }
+        });
+
+        racePanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        butSync.setBackground(new java.awt.Color(51, 255, 51));
+        butSync.setText("Sync");
+
+        butOneSec.setText("+1 sec");
+
+        jButton1.setBackground(new java.awt.Color(255, 51, 51));
+        jButton1.setText("Stop");
+
+        labTimeForStart.setText("Start: 12:02:04");
+
+        labDistance.setText("Distance: 30m");
+
+        labRaceTime.setFont(new java.awt.Font("Lato Heavy", 0, 48)); // NOI18N
+        labRaceTime.setText("12:00:32");
+
+        labSpeed.setText("Speed: 4.3kn");
+
+        jProgressDecelerate.setOrientation(1);
+
+        jProgressAccelerate.setOrientation(1);
+
+        javax.swing.GroupLayout racePanelLayout = new javax.swing.GroupLayout(racePanel);
+        racePanel.setLayout(racePanelLayout);
+        racePanelLayout.setHorizontalGroup(
+            racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(racePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(racePanelLayout.createSequentialGroup()
+                        .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(labTimeForStart, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                            .addComponent(labDistance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labSpeed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labRaceTime, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(racePanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(butOneSec))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, racePanelLayout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jProgressDecelerate, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25)
+                        .addComponent(butSync)))
+                .addContainerGap())
+            .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, racePanelLayout.createSequentialGroup()
+                    .addContainerGap(117, Short.MAX_VALUE)
+                    .addComponent(jProgressAccelerate, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(102, 102, 102)))
+        );
+        racePanelLayout.setVerticalGroup(
+            racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(racePanelLayout.createSequentialGroup()
+                .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(racePanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(labTimeForStart)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labDistance)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labSpeed))
+                    .addComponent(labRaceTime, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jProgressDecelerate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(racePanelLayout.createSequentialGroup()
+                        .addComponent(butOneSec)
+                        .addGap(18, 18, 18)
+                        .addComponent(butSync))
+                    .addComponent(jButton1))
+                .addContainerGap(26, Short.MAX_VALUE))
+            .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, racePanelLayout.createSequentialGroup()
+                    .addContainerGap(97, Short.MAX_VALUE)
+                    .addComponent(jProgressAccelerate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(70, 70, 70)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -174,23 +302,60 @@ public class SRStart extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(butSettings)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(butNewRace, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(racePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(362, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(butSettings)
+                    .addComponent(butNewRace))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(racePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void butNewRaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butNewRaceActionPerformed
+        System.out.println("new race");
+        session = core.newSession(positioning);
+    }//GEN-LAST:event_butNewRaceActionPerformed
+
+    private void butSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butSettingsActionPerformed
+        System.out.println("settings");        // TODO add your handling code here:
+    }//GEN-LAST:event_butSettingsActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        System.out.println("closing");        // TODO add your handling code here:
+        alive = false;
+        if(core != null) {core.stopEverything();}
+        if (positioning != null) { positioning.close();}
+    }//GEN-LAST:event_formWindowClosing
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton butNewRace;
+    private javax.swing.JButton butOneSec;
+    private javax.swing.JButton butSettings;
+    private javax.swing.JButton butSync;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabCurrentPosText;
     private javax.swing.JLabel jLabCurrentTimeData;
     private javax.swing.JLabel jLabCurrentTimeText;
@@ -202,6 +367,13 @@ public class SRStart extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JProgressBar jProgressAccelerate;
+    private javax.swing.JProgressBar jProgressDecelerate;
+    private javax.swing.JLabel labDistance;
+    private javax.swing.JLabel labRaceTime;
+    private javax.swing.JLabel labSpeed;
+    private javax.swing.JLabel labTimeForStart;
+    private javax.swing.JPanel racePanel;
     // End of variables declaration//GEN-END:variables
 
 
@@ -214,7 +386,7 @@ public class SRStart extends javax.swing.JFrame {
         } catch (AlreadyRunningException ex) {
             Logger.getLogger(SRStart.class.getName()).log(Level.INFO, ex.getMessage(), ex);
         }
-       
+       racePanel.setVisible(false);
         
     }
 }

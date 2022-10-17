@@ -5,7 +5,7 @@ package com.buri.srstart.data;
  *
  * @author bub
  */
-public class StartLine {
+public final class StartLine {
 
 private final StartBoat startBoat;
 private final StartMark startMark;

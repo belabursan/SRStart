@@ -55,8 +55,7 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
         if (running) { 
             throw new AlreadyRunningException("Positioning already running");
         }
-        java.awt.EventQueue.invokeLater(runnable);
-
+        new Thread(runnable).start();
     }
 
 
