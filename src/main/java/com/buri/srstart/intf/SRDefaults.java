@@ -7,6 +7,9 @@ package com.buri.srstart.intf;
  */
 public interface SRDefaults {
     static int START_DURATION_MIN = 5;
-    static long POSITION_RUNNER_FREQUENCY_SHORT_MS = 99;
-    static long POSITION_RUNNER_FREQUENCY_LONG_MS = 800;
+    static long POSITION_RUNNER_FREQUENCY_HIGH = 99;
+    static long POSITION_RUNNER_FREQUENCY_MEDIUM = 300;
+    static long POSITION_RUNNER_FREQUENCY_LOW = 800;
+    static String DATE_TIME_PATTERN = "YYYY-MM-dd   hh:mm:ss";
+    
 }

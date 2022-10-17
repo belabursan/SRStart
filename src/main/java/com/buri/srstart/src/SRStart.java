@@ -1,7 +1,11 @@
 package com.buri.srstart.src;
 
+import com.buri.srstart.data.Position;
 import com.buri.srstart.exceptions.AlreadyRunningException;
 import com.buri.srstart.intf.SRCoreIntf;
+import com.buri.srstart.intf.SRDefaults;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,8 +16,10 @@ import java.util.logging.Logger;
  */
 public class SRStart extends javax.swing.JFrame {
 
-    private SRCoreIntf core;
-    private SRPositioning positioning;
+    private SRCoreIntf core = null;
+    private SRPositioning positioning = null;
+    private final Runnable timeUpdater;
+    
     
     /**
      * Creates new form SRStart
@@ -21,6 +27,32 @@ public class SRStart extends javax.swing.JFrame {
     public SRStart() {
         initComponents();
         initSR();
+        timeUpdater = () -> {
+            while (true) {
+                if(positioning != null && jLabCurrentTimeData != null) {
+                    LocalDateTime currentTime = positioning.getCurrentGPSTime();
+                    Position p = positioning.getCurrentPosition();
+                    if (currentTime != null) {
+                        jLabCurrentTimeData.setText(currentTime.format(DateTimeFormatter.ofPattern(SRDefaults.DATE_TIME_PATTERN)));
+                        jLabCurrentTimeData.paintImmediately(jLabCurrentTimeData.getVisibleRect());
+                    }
+                    if (p != null) {
+                        jLabLatitudeData.setText(p.getFormattedLatitude());
+                        jLabLatitudeData.paintImmediately(jLabLatitudeData.getVisibleRect());
+                        jLabLongitudeData.setText(p.getFormattedLongitude());
+                        jLabLongitudeData.paintImmediately(jLabLongitudeData.getVisibleRect());
+                    }
+                }
+                try {
+                    synchronized (this) {
+                        wait(250);   
+                    }
+                }catch (InterruptedException ex) {
+                    Logger.getLogger(SRStart.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        new Thread(timeUpdater).start();
     }
 
 
@@ -33,27 +65,125 @@ public class SRStart extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel4 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabCurrentTimeText = new javax.swing.JLabel();
+        jLabCurrentPosText = new javax.swing.JLabel();
+        jLabLatitude = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabCurrentTimeData = new javax.swing.JLabel();
+        jLabEmpty = new javax.swing.JLabel();
+        jLabLatitudeData = new javax.swing.JLabel();
+        jLabLongitudeData = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("sadfsafsafsad");
+        jLabCurrentTimeText.setText("Current Time:");
+
+        jLabCurrentPosText.setText("Current Position:");
+
+        jLabLatitude.setText("Latitude:");
+
+        jLabel1.setText("Longitude:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabCurrentPosText, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabCurrentTimeText, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabLatitude, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabCurrentTimeText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabCurrentPosText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabLatitude)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addGap(0, 22, Short.MAX_VALUE))
+        );
+
+        jLabCurrentTimeData.setText("00-00-00   00-00-00");
+
+        jLabEmpty.setText(" ");
+
+        jLabLatitudeData.setText("000000000");
+
+        jLabLongitudeData.setText("000000000");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabCurrentTimeData, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabEmpty)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabLongitudeData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                        .addComponent(jLabLatitudeData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabCurrentTimeData, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabEmpty)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabLatitudeData)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabLongitudeData)
+                .addGap(0, 21, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(23, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addGap(58, 58, 58)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(66, 66, 66)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(345, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(362, Short.MAX_VALUE))
         );
 
         pack();
@@ -61,7 +191,17 @@ public class SRStart extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabCurrentPosText;
+    private javax.swing.JLabel jLabCurrentTimeData;
+    private javax.swing.JLabel jLabCurrentTimeText;
+    private javax.swing.JLabel jLabEmpty;
+    private javax.swing.JLabel jLabLatitude;
+    private javax.swing.JLabel jLabLatitudeData;
+    private javax.swing.JLabel jLabLongitudeData;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     // End of variables declaration//GEN-END:variables
 
 
@@ -74,5 +214,7 @@ public class SRStart extends javax.swing.JFrame {
         } catch (AlreadyRunningException ex) {
             Logger.getLogger(SRStart.class.getName()).log(Level.INFO, ex.getMessage(), ex);
         }
+       
+        
     }
 }

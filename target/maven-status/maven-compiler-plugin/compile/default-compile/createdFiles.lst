@@ -4,10 +4,10 @@ com/buri/srstart/data/SRTime.class
 com/buri/srstart/src/SRPositioning$1.class
 com/buri/srstart/data/StartBoat.class
 com/buri/srstart/SRStart.class
-com/buri/srstart/SRStart$1.class
 com/buri/srstart/exceptions/AlreadyRunningException.class
 com/buri/srstart/src/SRStart.class
 com/buri/srstart/intf/SRPositioningIntf.class
+com/buri/srstart/intf/SRPositioningIntf$PositionRunnerFrequency.class
 com/buri/srstart/intf/SRSessionIntf.class
 com/buri/srstart/data/Position.class
 com/buri/srstart/intf/SRCoreIntf.class

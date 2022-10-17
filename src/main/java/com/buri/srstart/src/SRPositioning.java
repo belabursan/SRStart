@@ -2,7 +2,6 @@ package com.buri.srstart.src;
 
 import com.buri.srstart.data.Position;
 import com.buri.srstart.exceptions.AlreadyRunningException;
-import com.buri.srstart.intf.SRCoreIntf;
 import com.buri.srstart.intf.SRDefaults;
 import com.buri.srstart.intf.SRPositioningIntf;
 import java.time.LocalDateTime;
@@ -21,12 +20,14 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
     private LocalDateTime currentGPSTime;
     private final Runnable runnable;
     private boolean running;
+    private long sleepTime_ms;
 
 
     public SRPositioning() {
         currentGPSTime = null;
         currentPosition = null;
         running = false;
+        sleepTime_ms = PositionRunnerFrequency.POSITION_RUNNER_FREQUENCY_MEDIUM_MS.value();
         
         runnable = new Runnable() {
             @Override
@@ -36,7 +37,7 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
                     runUpdate();
                     synchronized (runnable) {
                         try {
-                            runnable.wait(POSITION_RUNNER_FREQUENCY_SHORT_MS);
+                            runnable.wait(sleepTime_ms);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(SRPositioning.class.getName()).log(Level.SEVERE, "Positioning.runner interrupted", ex);
                         }
@@ -61,9 +62,9 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
 
     private void runUpdate() {
         // TODO : fix update of time and pos
-        currentPosition = new Position(1000000, 2000000);
+        currentPosition = new Position(55.59468654819864, 12.928926020700088);
         currentGPSTime = LocalDateTime.now();
-        System.out.println("update : " + currentGPSTime.toLocalTime());
+        //System.out.println("update : " + currentGPSTime.toLocalTime() + " pos: " + currentPosition.toString());
     }
 
 
@@ -93,6 +94,12 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
     @Override
     public void close() {
         this.stop();
+    }
+
+
+    @Override
+    public void setFrequency(PositionRunnerFrequency frequency) {
+        this.sleepTime_ms = frequency.value();
     }
 
 }
