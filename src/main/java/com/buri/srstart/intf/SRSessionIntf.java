@@ -15,13 +15,14 @@ public interface SRSessionIntf extends AutoCloseable {
     public void stop();
     public void syncRaceStartTimeDownToWholeMinute();
     public void addOneSecondToRaceStartTime();
+    public void removeOneSecondFromRaceStartTime();
     //
     public LocalDateTime getStartTime();
     //
     public SRTime getRaceTime();
-    public LocalDateTime getTimeNow();
+    public LocalDateTime getGPSTimeNow();
     public int getMetersToStartLine();
-    public int getSpeedInKnots();
+    public double getSpeedInKnots();
     public int getSuggetionForSpeed();
     public Position getCurrentPosition();
 }

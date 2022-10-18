@@ -34,16 +34,33 @@ public class SRTime {
     }
 
     public String getHoursAsString() {
-        return null;
+        return String.valueOf(hours);
     }
     
     public String getMinutesAsString() {
-        return null;
+        return String.valueOf(minutes);
     }
 
 
     public String getSecondsAsString() {
-        return null;
+        return String.valueOf(seconds);
+    }
+    
+    
+    public String getTimeAsString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (hours > 0) {
+            stringBuilder
+                    .append(hours)
+                    .append(":");
+        }
+        
+        stringBuilder
+                .append(minutes)
+                .append(":")
+                .append(seconds);
+        stringBuilder.trimToSize();
+        return stringBuilder.toString();
     }
     
 

@@ -39,13 +39,35 @@ public class Position {
         return formatPos("S", latitude);
     }
 
-//55.59468654819864, 12.928926020700088
+    
     public String getFormattedLongitude() {
         if (longitude < 0) {
             return formatPos("W", longitude);   
         }
         return formatPos("E", longitude);
     }
+    
+    
+    /**
+     * Returns the distance to another position
+     * @param that Another position to check the distance to
+     * @return distance in meters
+     */
+    public double distanceTo(Position that) {
+        double latInRadThis = Math.toRadians(this.latitude);
+        double latInRadThat = Math.toRadians(that.latitude);
+
+        // great circle distance in radians, using law of cosines formula
+        double angle = Math.acos(Math.sin(latInRadThis) * Math.sin(latInRadThat)
+                               + Math.cos(latInRadThis) * Math.cos(latInRadThat)
+                               * Math.cos(Math.toRadians(this.longitude) - Math.toRadians(that.longitude)));
+
+        // each degree on a great circle of Earth is 60 nautical miles,
+        //    each nautical mile is 1852 meters
+        return 60 * Math.toDegrees(angle) * 1852;
+    }
+
+
     
     
     private String formatPos(String swen, double pos) {
