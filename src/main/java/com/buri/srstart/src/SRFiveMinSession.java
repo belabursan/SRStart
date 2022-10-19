@@ -18,9 +18,11 @@ import java.util.logging.Logger;
  */
 public class SRFiveMinSession implements SRSessionIntf {
 
+    private static final int LIST_SIZE = 20;
+
     private LocalDateTime startTime;
     private double currentSpeed_kn;
-    private double mediumSpeed_kn_s;
+    private double mediumSpeed_kn_3s;
     private boolean alive;
     private int distanceToLine_m;
     private Duration durationBetweenNowAndStartTime;
@@ -31,6 +33,7 @@ public class SRFiveMinSession implements SRSessionIntf {
     private final Runnable runnable;
     private final LinkedList<Position> positionList;
     private final LinkedList<LocalDateTime> timeList;
+    private final LinkedList<Double> speedList;
 
 
     public SRFiveMinSession(StartLine startLine, SRPositioningIntf pos) {
@@ -40,9 +43,10 @@ public class SRFiveMinSession implements SRSessionIntf {
         this.currentSpeed_kn = 0;
         this.distanceToLine_m = 0;
         this.alive = false;
-        this.mediumSpeed_kn_s = 0;
+        this.mediumSpeed_kn_3s = 0;
         this.positionList = new LinkedList<>();
         this.timeList = new LinkedList<>();
+        this.speedList = new LinkedList<>();
 
         this.startLine = startLine;
         this.positioning = pos;
@@ -51,6 +55,7 @@ public class SRFiveMinSession implements SRSessionIntf {
             @Override
             public void run() {
                 alive = true;
+                boolean checkSpeed = true;
 
                 try {
                     while (alive) {
@@ -59,10 +64,13 @@ public class SRFiveMinSession implements SRSessionIntf {
 
                         durationBetweenNowAndStartTime = Duration.between(startTime, now);
                         updateDistanceToStartLine(pos);
-                        calculateSpeed(now, pos);
+                        if (checkSpeed) {
+                            calculateSpeed(now, pos);
+                        }
+                        checkSpeed = !checkSpeed;
 
                         synchronized (runnable) {
-                            runnable.wait(10);
+                            runnable.wait(50);
                         }
                     }
                 } catch (InterruptedException ex) {
@@ -162,6 +170,11 @@ public class SRFiveMinSession implements SRSessionIntf {
     }
 
 
+    @Override
+    public double getMediumSpeed() {
+        return this.mediumSpeed_kn_3s;
+    }
+    
     /**
      * Returns a suggestion to speed up or slow down
      *
@@ -210,57 +223,33 @@ public class SRFiveMinSession implements SRSessionIntf {
     }
 
 
-    private void calculateSpeed(LocalDateTime now, Position pos) {
-        positionList.add(pos);
-        if (positionList.size() > 5) {
+    private void calculateSpeed(LocalDateTime now, Position currentPos) {
+        positionList.addFirst(currentPos);
+        if (positionList.size() > LIST_SIZE) {
             positionList.removeLast();
         }
-        
-        timeList.add(now);
-        if(timeList.size() > 6) {
+
+        timeList.addFirst(now);
+        if (timeList.size() > LIST_SIZE) {
             timeList.removeLast();
         }
-        //TODO count medium and speed and set speed
-        
+        if (timeList.size() > 1) {
+            double distance_m = currentPos.distanceTo(positionList.getLast());
+            double duration_s = Duration.between(now, timeList.getLast()).getSeconds();
+            double speed_m_s = distance_m / duration_s;
+            
+            currentSpeed_kn = 1.94384 * speed_m_s;
+            speedList.addFirst(currentSpeed_kn);
+            if (speedList.size() > LIST_SIZE*3) {
+                speedList.removeLast();
+            }
+            double speed_med = 0;
+            int count = 0;
+            for (double s : speedList) {
+                count++;
+                speed_med += s;
+            }
+            this.mediumSpeed_kn_3s = speed_med / count;
+        }
     }
-
-    //55.598636051328455, 12.934975659769195
-    /**
-     * ****************************************************************************************************
-     */
-    /*
-    double distance_on_geoid(double lat1, double lon1, double lat2, double lon2) {
-        // Convert degrees to radians
-        lat1 = lat1 * M_PI / 180.0;
-        lon1 = lon1 * M_PI / 180.0;
-        lat2 = lat2 * M_PI / 180.0;
-        lon2 = lon2 * M_PI / 180.0;
-        // radius of earth in metres
-        double r = 6378100;
-        // P
-        double rho1 = r * cos(lat1);
-        double z1 = r * sin(lat1);
-        double x1 = rho1 * cos(lon1);
-        double y1 = rho1 * sin(lon1);
-        // Q
-        double rho2 = r * cos(lat2);
-        double z2 = r * sin(lat2);
-        double x2 = rho2 * cos(lon2);
-        double y2 = rho2 * sin(lon2);
-        // Dot product
-        double dot = (x1 * x2 + y1 * y2 + z1 * z2);
-        double cos_theta = dot / (r * r);
-        double theta = acos(cos_theta);
-        // Distance in Metres
-        return r * theta;
-    }
-     */
-    // https://www.ridgesolutions.ie/index.php/2022/05/26/code-to-calculate-heading-bearing-from-two-gps-latitude-and-longitude/
-    /*
-        auto dist = distance_on_geoid(p1.latitude, p1.longitude, p2.latitude, p2.longitude);
-        // timestamp is in milliseconds
-        auto time_s = (p2.timestamp - p1.timestamp) / 1000.0;
-        double speed_mps = dist / time_s;
-        double speed_kph = (speed_mps * 3600.0) / 1000.0;
-     */
 }

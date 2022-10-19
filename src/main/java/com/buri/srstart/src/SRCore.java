@@ -23,7 +23,7 @@ import com.buri.srstart.intf.SRSessionIntf;
     public SRCore() {
         startBoatPosition = null;
         startMarkPosition = null;
-        minutesToStart = -1;
+        minutesToStart = 5; //
         session = null;
     }
      

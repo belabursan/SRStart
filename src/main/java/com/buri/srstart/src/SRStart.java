@@ -50,9 +50,19 @@ public class SRStart extends javax.swing.JFrame {
                     
                     if (session != null) {
                         int metersToStartLine = session.getMetersToStartLine();
+                        labDistance.setText("Distance: " + metersToStartLine + "m");
+                        labDistance.paintImmediately(jLabCurrentTimeData.getVisibleRect());
+                        
                         LocalDateTime startTime = session.getStartTime();
+                        labRaceTime.setText(startTime.format(DateTimeFormatter.ofPattern(SRDefaults.DATE_TIME_PATTERN)));
+                        labRaceTime.paintImmediately(jLabCurrentTimeData.getVisibleRect());
+                        
                         int suggestionForSpeed = session.getSuggetionForSpeed();
+                        //TODO
+                        
                         double speed = session.getSpeedInKnots();
+                        labSpeed.setText("Speed: " + speed + "kn");
+                        labSpeed.paintImmediately(jLabCurrentTimeData.getVisibleRect());
                     }
                 }
                 try {
@@ -242,6 +252,11 @@ public class SRStart extends javax.swing.JFrame {
 
         butStartSess.setBackground(new java.awt.Color(255, 255, 153));
         butStartSess.setText("START");
+        butStartSess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butStartSessActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("-1 sec");
 
@@ -290,8 +305,8 @@ public class SRStart extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labSpeed)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
+                        .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(butSync))))
                 .addGroup(racePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(racePanelLayout.createSequentialGroup()
@@ -353,6 +368,7 @@ public class SRStart extends javax.swing.JFrame {
     private void butNewRaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butNewRaceActionPerformed
         System.out.println("new race");
         session = core.newSession(positioning);
+        racePanel.setVisible(true);
     }//GEN-LAST:event_butNewRaceActionPerformed
 
     private void butSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butSettingsActionPerformed
@@ -365,6 +381,10 @@ public class SRStart extends javax.swing.JFrame {
         if(core != null) {core.stopEverything();}
         if (positioning != null) { positioning.close();}
     }//GEN-LAST:event_formWindowClosing
+
+    private void butStartSessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butStartSessActionPerformed
+        session.start();
+    }//GEN-LAST:event_butStartSessActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

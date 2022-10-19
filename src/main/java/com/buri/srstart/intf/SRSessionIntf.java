@@ -23,6 +23,7 @@ public interface SRSessionIntf extends AutoCloseable {
     public LocalDateTime getGPSTimeNow();
     public int getMetersToStartLine();
     public double getSpeedInKnots();
+    public double getMediumSpeed();
     public int getSuggetionForSpeed();
     public Position getCurrentPosition();
 }
