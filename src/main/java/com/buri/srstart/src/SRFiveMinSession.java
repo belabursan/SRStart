@@ -7,6 +7,7 @@ import com.buri.srstart.intf.SRPositioningIntf;
 import com.buri.srstart.intf.SRSessionIntf;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ public class SRFiveMinSession implements SRSessionIntf {
 
     private LocalDateTime startTime;
     private double currentSpeed_kn;
+    private double mediumSpeed_kn_s;
     private boolean alive;
     private int distanceToLine_m;
     private Duration durationBetweenNowAndStartTime;
@@ -27,6 +29,8 @@ public class SRFiveMinSession implements SRSessionIntf {
     private final long preStartTime_min;
     private final SRPositioningIntf positioning;
     private final Runnable runnable;
+    private final LinkedList<Position> positionList;
+    private final LinkedList<LocalDateTime> timeList;
 
 
     public SRFiveMinSession(StartLine startLine, SRPositioningIntf pos) {
@@ -36,6 +40,9 @@ public class SRFiveMinSession implements SRSessionIntf {
         this.currentSpeed_kn = 0;
         this.distanceToLine_m = 0;
         this.alive = false;
+        this.mediumSpeed_kn_s = 0;
+        this.positionList = new LinkedList<>();
+        this.timeList = new LinkedList<>();
 
         this.startLine = startLine;
         this.positioning = pos;
@@ -47,7 +54,12 @@ public class SRFiveMinSession implements SRSessionIntf {
 
                 try {
                     while (alive) {
-                        durationBetweenNowAndStartTime = Duration.between(startTime, getGPSTimeNow());
+                        Position pos = getCurrentPosition();
+                        LocalDateTime now = getGPSTimeNow();
+
+                        durationBetweenNowAndStartTime = Duration.between(startTime, now);
+                        updateDistanceToStartLine(pos);
+                        calculateSpeed(now, pos);
 
                         synchronized (runnable) {
                             runnable.wait(10);
@@ -186,6 +198,32 @@ public class SRFiveMinSession implements SRSessionIntf {
     public void close() throws Exception {
         stop();
     }
+
+
+    private void updateDistanceToStartLine(Position pos) {
+        double distanceToStarboardSide = pos.distanceTo(startLine.getStartBoat());
+        double distanceToPortSide = pos.distanceTo(startLine.getStartMark());
+
+        double s = (distanceToStarboardSide + distanceToPortSide + startLine.getLength_m()) / 2;
+        double h = 2 * Math.sqrt(s * (s - distanceToStarboardSide) * (s - startLine.getLength_m()) * (s - distanceToPortSide)) / startLine.getLength_m();
+        this.distanceToLine_m = (int) (h + 0.5);
+    }
+
+
+    private void calculateSpeed(LocalDateTime now, Position pos) {
+        positionList.add(pos);
+        if (positionList.size() > 5) {
+            positionList.removeLast();
+        }
+        
+        timeList.add(now);
+        if(timeList.size() > 6) {
+            timeList.removeLast();
+        }
+        //TODO count medium and speed and set speed
+        
+    }
+
     //55.598636051328455, 12.934975659769195
     /**
      * ****************************************************************************************************
