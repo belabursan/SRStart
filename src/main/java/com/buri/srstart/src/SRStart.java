@@ -52,7 +52,7 @@ public class SRStart extends javax.swing.JFrame {
                         int metersToStartLine = session.getMetersToStartLine();
                         LocalDateTime startTime = session.getStartTime();
                         int suggestionForSpeed = session.getSuggetionForSpeed();
-                        int speed = session.getSpeedInKnots();
+                        double speed = session.getSpeedInKnots();
                     }
                 }
                 try {
