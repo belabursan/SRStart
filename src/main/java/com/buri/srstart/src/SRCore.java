@@ -64,7 +64,11 @@ import com.buri.srstart.intf.SRSessionIntf;
     @Override
     public SRSessionIntf newSession(SRPositioningIntf pos) {
         if (minutesToStart == 5) {
-            return new SRFiveMinSession(new StartLine(startBoatPosition, startMarkPosition), pos);
+            if(startBoatPosition != null && startMarkPosition != null) {
+                return new SRFiveMinSession(new StartLine(startBoatPosition, startMarkPosition), pos);
+            } else {
+                System.out.println("start boat or mark is null");
+            }
         }
         return null;
     }

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -87,6 +89,18 @@ public class SRStart extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        diaSettings = new javax.swing.JDialog();
+        labStartBoat = new javax.swing.JLabel();
+        labStartMark = new javax.swing.JLabel();
+        textStartBoatLat = new javax.swing.JTextField();
+        textStartBoatLon = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        textStartMarkLat = new javax.swing.JTextField();
+        textStartMarkLon = new javax.swing.JTextField();
+        butStartBoatGPS = new javax.swing.JButton();
+        butStartMarkGPS = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabCurrentTimeText = new javax.swing.JLabel();
@@ -112,6 +126,95 @@ public class SRStart extends javax.swing.JFrame {
         jProgressAccelerate = new javax.swing.JProgressBar();
         butStartSess = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+
+        diaSettings.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        diaSettings.setBounds(new java.awt.Rectangle(50, 50, 400, 200));
+
+        labStartBoat.setText("Start Boat:");
+
+        labStartMark.setText("Start Mark:");
+
+        textStartBoatLat.setText("00.000000");
+
+        textStartBoatLon.setText("00.000000");
+
+        jLabel2.setText("Latitude");
+
+        jLabel3.setText("Longitude");
+
+        textStartMarkLat.setText("00.000000");
+
+        textStartMarkLon.setText("00.000000");
+
+        butStartBoatGPS.setText("GPS");
+
+        butStartMarkGPS.setText("GPS");
+
+        jButton3.setText("Close");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout diaSettingsLayout = new javax.swing.GroupLayout(diaSettings.getContentPane());
+        diaSettings.getContentPane().setLayout(diaSettingsLayout);
+        diaSettingsLayout.setHorizontalGroup(
+            diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(diaSettingsLayout.createSequentialGroup()
+                .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(diaSettingsLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(diaSettingsLayout.createSequentialGroup()
+                                .addComponent(labStartMark)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textStartMarkLat))
+                            .addGroup(diaSettingsLayout.createSequentialGroup()
+                                .addComponent(labStartBoat)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textStartBoatLat, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(textStartBoatLon, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                            .addComponent(textStartMarkLon))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(butStartBoatGPS)
+                            .addComponent(butStartMarkGPS)))
+                    .addGroup(diaSettingsLayout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jLabel2)
+                        .addGap(58, 58, 58)
+                        .addComponent(jLabel3))
+                    .addGroup(diaSettingsLayout.createSequentialGroup()
+                        .addGap(147, 147, 147)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+        diaSettingsLayout.setVerticalGroup(
+            diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(diaSettingsLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labStartBoat)
+                    .addComponent(textStartBoatLat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textStartBoatLon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butStartBoatGPS))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(diaSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labStartMark)
+                    .addComponent(textStartMarkLat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textStartMarkLon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butStartMarkGPS))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(24, 24, 24))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sail Race Start");
@@ -237,14 +340,14 @@ public class SRStart extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(255, 51, 51));
         jButton1.setText("Stop");
 
-        labTimeForStart.setText("Start: 12:02:04");
+        labTimeForStart.setText("Start: 00:00:00");
 
-        labDistance.setText("Distance: 30m");
+        labDistance.setText("Distance: 0m");
 
         labRaceTime.setFont(new java.awt.Font("Lato Heavy", 0, 48)); // NOI18N
-        labRaceTime.setText("12:00:32");
+        labRaceTime.setText("05:00");
 
-        labSpeed.setText("Speed: 4.3kn");
+        labSpeed.setText("Speed: 0kn");
 
         jProgressDecelerate.setOrientation(1);
 
@@ -368,11 +471,14 @@ public class SRStart extends javax.swing.JFrame {
     private void butNewRaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butNewRaceActionPerformed
         System.out.println("new race");
         session = core.newSession(positioning);
-        racePanel.setVisible(true);
+        if (session != null) {
+            racePanel.setVisible(true);
+        }
     }//GEN-LAST:event_butNewRaceActionPerformed
 
     private void butSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butSettingsActionPerformed
-        System.out.println("settings");        // TODO add your handling code here:
+        System.out.println("settings");
+        diaSettings.setVisible(true);
     }//GEN-LAST:event_butSettingsActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -386,15 +492,23 @@ public class SRStart extends javax.swing.JFrame {
         session.start();
     }//GEN-LAST:event_butStartSessActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        System.out.println("closing settings");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton butNewRace;
     private javax.swing.JButton butPlusOneSec;
     private javax.swing.JButton butSettings;
+    private javax.swing.JButton butStartBoatGPS;
+    private javax.swing.JButton butStartMarkGPS;
     private javax.swing.JButton butStartSess;
     private javax.swing.JButton butSync;
+    private javax.swing.JDialog diaSettings;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabCurrentPosText;
     private javax.swing.JLabel jLabCurrentTimeData;
     private javax.swing.JLabel jLabCurrentTimeText;
@@ -403,6 +517,8 @@ public class SRStart extends javax.swing.JFrame {
     private javax.swing.JLabel jLabLatitudeData;
     private javax.swing.JLabel jLabLongitudeData;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -411,8 +527,14 @@ public class SRStart extends javax.swing.JFrame {
     private javax.swing.JLabel labDistance;
     private javax.swing.JLabel labRaceTime;
     private javax.swing.JLabel labSpeed;
+    private javax.swing.JLabel labStartBoat;
+    private javax.swing.JLabel labStartMark;
     private javax.swing.JLabel labTimeForStart;
     private javax.swing.JPanel racePanel;
+    private javax.swing.JTextField textStartBoatLat;
+    private javax.swing.JTextField textStartBoatLon;
+    private javax.swing.JTextField textStartMarkLat;
+    private javax.swing.JTextField textStartMarkLon;
     // End of variables declaration//GEN-END:variables
 
 
