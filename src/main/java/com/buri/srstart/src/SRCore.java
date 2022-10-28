@@ -4,6 +4,7 @@ import com.buri.srstart.data.Position;
 import com.buri.srstart.data.StartBoat;
 import com.buri.srstart.data.StartLine;
 import com.buri.srstart.data.StartMark;
+import com.buri.srstart.exceptions.MissingSettingsException;
 import com.buri.srstart.intf.SRCoreIntf;
 import com.buri.srstart.intf.SRPositioningIntf;
 import com.buri.srstart.intf.SRSessionIntf;
@@ -23,7 +24,7 @@ import com.buri.srstart.intf.SRSessionIntf;
     public SRCore() {
         startBoatPosition = null;
         startMarkPosition = null;
-        minutesToStart = 5; //
+        minutesToStart = 5; // default to 5
         session = null;
     }
      
@@ -62,15 +63,15 @@ import com.buri.srstart.intf.SRSessionIntf;
 
 
     @Override
-    public SRSessionIntf newSession(SRPositioningIntf pos) {
+    public SRSessionIntf newSession(SRPositioningIntf pos) throws MissingSettingsException {
         if (minutesToStart == 5) {
             if(startBoatPosition != null && startMarkPosition != null) {
                 return new SRFiveMinSession(new StartLine(startBoatPosition, startMarkPosition), pos);
             } else {
-                System.out.println("start boat or mark is null");
+                throw new MissingSettingsException("Start Boat or Mark position is not set");
             }
         }
-        return null;
+        throw new MissingSettingsException("Minutes to start not set");
     }
 
 

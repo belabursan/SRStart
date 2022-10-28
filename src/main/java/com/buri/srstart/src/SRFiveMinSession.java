@@ -7,6 +7,9 @@ import com.buri.srstart.intf.SRPositioningIntf;
 import com.buri.srstart.intf.SRSessionIntf;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +58,7 @@ public class SRFiveMinSession implements SRSessionIntf {
             @Override
             public void run() {
                 alive = true;
+                System.out.println("running session");
                 boolean checkSpeed = true;
 
                 try {
@@ -108,12 +112,10 @@ public class SRFiveMinSession implements SRSessionIntf {
     @Override
     public void syncRaceStartTimeDownToWholeMinute() {
         if (this.startTime != null) {
-            int secs = startTime.getSecond();
-            if (secs == 0) {
-                startTime.minusMinutes(1);
-            } else {
-                startTime.minusSeconds(secs);
-            }
+            int secs = durationBetweenNowAndStartTime.toSecondsPart();
+            System.out.println("removing secs: " + secs);
+           
+            startTime = startTime.minusSeconds(Math.abs(secs));
         }
     }
 

@@ -11,5 +11,6 @@ public interface SRDefaults {
     static long POSITION_RUNNER_FREQUENCY_MEDIUM = 300;
     static long POSITION_RUNNER_FREQUENCY_LOW = 800;
     static String DATE_TIME_PATTERN = "YYYY-MM-dd   hh:mm:ss";
+    static String TIME_PATTERN = "hh:mm:ss";
     
 }

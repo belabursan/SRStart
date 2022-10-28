@@ -60,8 +60,8 @@ public class SRPositioning implements SRPositioningIntf, SRDefaults {
 
 
     private void runUpdate() {
-        // TODO : fix update of time and pos
-        currentPosition = new Position(55.59468654819864, 12.928926020700088);
+        // TODO : fix update of time and pos  55.601150852886974, 12.937236410287522
+        currentPosition = new Position(55.59827771016874, 12.9347258626275);
         currentGPSTime = LocalDateTime.now();
         //System.out.println("update : " + currentGPSTime.toLocalTime() + " pos: " + currentPosition.toString());
     }

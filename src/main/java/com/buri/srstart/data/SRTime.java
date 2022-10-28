@@ -49,16 +49,25 @@ public class SRTime {
     
     public String getTimeAsString() {
         StringBuilder stringBuilder = new StringBuilder();
+        int m = Math.abs(minutes);
+        int s = Math.abs(seconds);
+        
         if (hours > 0) {
             stringBuilder
-                    .append(hours)
+                    .append(Math.abs(hours))
                     .append(":");
         }
         
+        if (m < 10) {
+            stringBuilder.append("0");
+        }
         stringBuilder
-                .append(minutes)
-                .append(":")
-                .append(seconds);
+                .append(m)
+                .append(":");
+        if (s < 10) {
+            stringBuilder.append("0");
+        }
+        stringBuilder.append(s);
         stringBuilder.trimToSize();
         return stringBuilder.toString();
     }
